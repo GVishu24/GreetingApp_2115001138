@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessLayer.Interface;
+using ModelLayer.Model;
 using RepositoryLayer.Interface;
+
 
 namespace BusinessLayer.Service
 {
@@ -20,5 +22,27 @@ namespace BusinessLayer.Service
         {
             return _igreetingRL.GetGreetingRL();
         }
+        public string GetGreetingBL(GreetingRequestModel greetingRequest)
+        {
+            if (!string.IsNullOrEmpty(greetingRequest.FirstName) && !string.IsNullOrEmpty(greetingRequest.LastName))
+            {
+                return $"Hello {greetingRequest.FirstName} {greetingRequest.LastName}";
+            }
+            else if (!string.IsNullOrEmpty(greetingRequest.FirstName))
+            {
+                return $"Hello {greetingRequest.FirstName}";
+            }
+            else if (!string.IsNullOrEmpty(greetingRequest.LastName))
+            {
+                return $"Hello {greetingRequest.LastName}";
+            }
+            else
+            {
+                return "Hello";
+            }
+        }
+
     }
 }
+    
+

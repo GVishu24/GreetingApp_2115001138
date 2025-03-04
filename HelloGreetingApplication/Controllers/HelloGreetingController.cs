@@ -145,6 +145,34 @@ namespace HelloGreetingApplication.Controllers
                 _logger.LogInformation($"Error occured while deletion Error = {ex.Message}");
                 return BadRequest(responseModel);
             }
+            
+        }
+        [HttpPost]
+        [Route("GetGreeting")]
+        public IActionResult Post([FromBody] GreetingRequestModel greetingRequest)
+        {
+            try
+            {
+                _logger.LogInformation("starting process of getting greeting request");
+                ResponseModel<string> responseModel = new ResponseModel<string>();
+                string greetingMsg = _igreetingBL.GetGreetingBL(greetingRequest);
+                responseModel.Success = true;
+                responseModel.Message = "Greetings";
+                responseModel.Data = greetingMsg;
+                _logger.LogInformation("Greeting successfull");
+                return Ok(responseModel);
+
+            }
+            catch (Exception ex)
+            {
+                ResponseModel<string> responseModel = new ResponseModel<string>();
+                responseModel.Success = false;
+                responseModel.Message = "Greeting failed";
+                responseModel.Data = ex.Message;
+                _logger.LogInformation($"error occured while getting greeting {ex.Message}");
+                return BadRequest(responseModel);
+            }
+
         }
     }
 }
