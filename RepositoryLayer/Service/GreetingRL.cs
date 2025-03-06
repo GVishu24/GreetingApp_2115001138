@@ -83,5 +83,28 @@ namespace RepositoryLayer.Service
                 return $"There's some error occured while trying to save greeting message to the Database {e.Message}";
             }
         }
+        public string GetGreetingByIdRL(GreetByIdModel greetingID)
+        {
+            try
+            {
+                var greeting = _dbContext.GreetingEntities.FirstOrDefault(g => g.GreetingId == greetingID.Id);
+                if (greeting != null)
+                {
+                    _logger.LogInformation("Greeting message fetched successfully");
+                    return greeting.GreetingMessage;
+                }
+                else
+                {
+                    _logger.LogError("There's no greeting message corresponding to that ID");
+                    return "Greeting message not found";
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception Occured while fetching greeting message by ID {e.Message}");
+                return "There's some error occured while trying to fetch greeting message by ID";
+            }
+        }
     }
 }

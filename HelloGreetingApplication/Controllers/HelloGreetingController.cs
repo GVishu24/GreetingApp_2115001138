@@ -220,6 +220,30 @@ namespace HelloGreetingApplication.Controllers
                 return BadRequest(response);
             }
         }
+        [HttpPost]
+        [Route("GetGreetingById")]
+        public IActionResult Post(GreetByIdModel iD)
+        {
+            try
+            {
+                _logger.LogInformation("Get Greeting By Id method called");
+                ResponseModel<string> response = new ResponseModel<string>();
+                string greeting = _igreetingBL.GetGreetingByIdBL(iD);
+                response.Message = "Get method successfully applied";
+                response.Success = true;
+                response.Data = greeting;
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception Occured in GetGreeting {e.Message}");
+                ResponseModel<string> response = new ResponseModel<string>();
+                response.Message = "Get method failed";
+                response.Success = false;
+                response.Data = e.Message;
+                return BadRequest(response);
+            }
+        }
     }
 }
 
