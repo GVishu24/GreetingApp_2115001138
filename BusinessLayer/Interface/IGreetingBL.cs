@@ -16,6 +16,8 @@ namespace BusinessLayer.Interface
         public string GetGreetingByIdBL(GreetByIdModel iD);
         public List<GreetingEntity> GetAllGreetingsBL();
         public bool UpdateGreetingMessageBL(int id, SaveGreetingModel modifiedGreeting);
+        public bool DeleteGreetingMessageBL(int id);
+
 
 
     }

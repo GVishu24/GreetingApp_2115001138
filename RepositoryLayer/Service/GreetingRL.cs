@@ -151,5 +151,26 @@ namespace RepositoryLayer.Service
                 return false;
             }
         }
+        public bool DeleteGreetingMessageRL(int id)
+        {
+            try
+            {
+                _logger.LogInformation($"Trying to delete greeting message in the Database for ID: {id}");
+                var greeting = _dbContext.GreetingEntities.FirstOrDefault(g => g.GreetingId == id);
+                if (greeting == null)
+                {
+                    _logger.LogWarning($"No greeting found with ID: {id}");
+                    return false;
+                }
+                _dbContext.GreetingEntities.Remove(greeting);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception occurred while deleting greeting message in the Database: {e.Message}");
+                return false;
+            }
+        }
     }
 }

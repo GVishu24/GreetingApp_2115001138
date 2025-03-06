@@ -282,7 +282,7 @@ namespace HelloGreetingApplication.Controllers
                     response.Success = true;
                     response.Message = "Greeting is successfully updated";
                     response.Data = $"{modifiedGreeting.GreetingMessage}";
-                    
+
                     return Ok(response);
                 }
                 else
@@ -304,7 +304,41 @@ namespace HelloGreetingApplication.Controllers
                 return BadRequest(response);
             }
         }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteGreeting(int id)
+        {
+            try
+            {
+                _logger.LogInformation($"Delete Greetings method called for ID: {id}");
+                bool result = _igreetingBL.DeleteGreetingMessageBL(id);
+                if (result)
+                {
+                    ResponseModel<string> response = new ResponseModel<string>();
+                    response.Success = true;
+                    response.Message = "Greeting is successfully deleted";
+                    response.Data = $"The greeting message with id {id} is deleted";
+                    return Ok(response);
+                }
+                else
+                {
+                    ResponseModel<string> response = new ResponseModel<string>();
+                    response.Success = false;
+                    response.Message = "No greeting message is present with that id";
+                    response.Data = $"please create a new greeting message before deleting";
+                    return NotFound(response);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception occurred in Delete Greetings: {e.Message}");
+                ResponseModel<string> response = new ResponseModel<string>();
+                response.Success = false;
+                response.Message = $"an error occured while trying to delete the greeting {e.Message}";
+                response.Data = $"Not able to delete greeting currently";
+                return BadRequest(response);
+            }
 
+        }
     }
 }
 

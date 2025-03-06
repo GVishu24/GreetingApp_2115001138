@@ -16,6 +16,8 @@ namespace RepositoryLayer.Interface
         string GetGreetingByIdRL(GreetByIdModel greetingID);
         public List<GreetingEntity> RetrieveAllGreetingsRL();
         public bool UpdateGreetingMessageRL(int id, SaveGreetingModel modifiedGreeting);
+        public bool DeleteGreetingMessageRL(int id);
+
 
 
     }

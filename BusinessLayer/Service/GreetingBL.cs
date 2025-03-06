@@ -102,6 +102,19 @@ namespace BusinessLayer.Service
                 return false;
             }
         }
+        public bool DeleteGreetingMessageBL(int id)
+        {
+            try
+            {
+                _logger.LogInformation("Trying to delete greeting message by id");
+                return _greetingRL.DeleteGreetingMessageRL(id);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return false;
+            }
+        }
     }
 }
     
