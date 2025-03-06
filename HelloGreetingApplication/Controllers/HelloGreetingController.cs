@@ -1,4 +1,5 @@
 using BusinessLayer.Interface;
+using BusinessLayer.Service;
 using Microsoft.AspNetCore.Mvc;
 using ModelLayer.Model;
 
@@ -30,7 +31,8 @@ namespace HelloGreetingApplication.Controllers
                 return Ok(responseModel);
 
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 ResponseModel<string> responseModel = new ResponseModel<string>();
                 responseModel.Success = false;
                 responseModel.Message = "oops error occured";
@@ -63,7 +65,7 @@ namespace HelloGreetingApplication.Controllers
                 _logger.LogInformation($"error occured while registering user, Error: {ex.Message}");
                 return BadRequest(responseModel);
             }
-            
+
 
         }
         [HttpPut]
@@ -88,7 +90,7 @@ namespace HelloGreetingApplication.Controllers
                 _logger.LogError($"Error occured while updating user with Email : {userRegistrationModel.Email}");
                 return BadRequest(responseModel);
 
-            }    
+            }
 
         }
         [HttpPatch]
@@ -114,7 +116,7 @@ namespace HelloGreetingApplication.Controllers
                 _logger.LogError($"Error occured while updating value Error : {ex.Message}");
                 return BadRequest(responseModel);
             }
-            
+
         }
         [HttpDelete]
         public IActionResult Delete(UserRegistrationModel userDeletion)
@@ -145,11 +147,11 @@ namespace HelloGreetingApplication.Controllers
                 _logger.LogInformation($"Error occured while deletion Error = {ex.Message}");
                 return BadRequest(responseModel);
             }
-            
+
         }
         [HttpPost]
         [Route("GetGreeting")]
-        public IActionResult Post([FromBody] GreetingRequestModel greetingRequest)
+        public IActionResult Post([FromBody] GreetUserModel greetingRequest)
         {
             try
             {
@@ -173,6 +175,50 @@ namespace HelloGreetingApplication.Controllers
                 return BadRequest(responseModel);
             }
 
+        }
+        //[HttpPost]
+        //[Route("SaveGreeting")]
+        //public IActionResult SaveGreeting(GreetUserModel saveGreetingRequest)
+        //{
+        //    try
+        //    {
+        //        _logger.LogInformation("Starting process of saving greeting according to user");
+        //        ResponseModel<string> responseDB = _igreetingBL.SavegreetingBL(saveGreetingRequest);
+        //        _logger.LogInformation("Greeting Saved successfully");
+        //        return Ok(responseDB);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Error occured while saving greeting : {ex.Message}");
+        //        ResponseModel<string> responseDB = _igreetingBL.SavegreetingBL(saveGreetingRequest);
+
+        //        return BadRequest(responseDB);
+        //    }
+        //}
+        [HttpPost]
+        [Route("SaveGreetings")]
+        public IActionResult Post(SaveGreetingModel greeting)
+        {
+            _logger.LogInformation("Post method called to save the greeting message");
+            try
+            {
+                _logger.LogInformation("Trying to save the greeting message");
+                ResponseModel<string> response = new ResponseModel<string>();
+                string result = _igreetingBL.SaveGreetingBL(greeting);
+                response.Message = "Greeting message saved successfully";
+                response.Success = true;
+                response.Data = $"The greeting message saved in the Database is: {result}";
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception Occured in Save Greeting Method {e.Message}");
+                ResponseModel<string> response = new ResponseModel<string>();
+                response.Message = "There is some error while trying to save the greeting message";
+                response.Success = false;
+                response.Data = e.Message;
+                return BadRequest(response);
+            }
         }
     }
 }

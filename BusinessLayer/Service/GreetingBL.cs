@@ -4,25 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessLayer.Interface;
+using Microsoft.Extensions.Logging;
 using ModelLayer.Model;
+using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
+using RepositoryLayer.Service;
 
 
 namespace BusinessLayer.Service
 {
     public class GreetingBL : IGreetingBL
+
     {
-        private readonly IGreetingRL _igreetingRL;
-        public GreetingBL(IGreetingRL igreetingRL)
+        private readonly ILogger<GreetingBL> _logger;
+        private readonly IGreetingRL _greetingRL;
+        public GreetingBL(IGreetingRL igreetingRL, ILogger<GreetingBL> logger)
         {
-            _igreetingRL = igreetingRL;
+            _greetingRL = igreetingRL;
+            _logger = logger;
         }
         //method to get greeting from repo layer
         public string GetGreetingBL()
         {
-            return _igreetingRL.GetGreetingRL();
+            return _greetingRL.GetGreetingRL();
         }
-        public string GetGreetingBL(GreetingRequestModel greetingRequest)
+        public string GetGreetingBL(GreetUserModel greetingRequest)
         {
             if (!string.IsNullOrEmpty(greetingRequest.FirstName) && !string.IsNullOrEmpty(greetingRequest.LastName))
             {
@@ -38,10 +44,23 @@ namespace BusinessLayer.Service
             }
             else
             {
-                return "Hello";
+                return "Hello World";
+            }
+
+        }
+        public string SaveGreetingBL(SaveGreetingModel greeting)
+        {
+            try
+            {
+                _logger.LogInformation("Trying to save the greeting message");
+                return _greetingRL.SaveGreetingRL(greeting);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception Occured while saving greeting message to the Database {e.Message}");
+                return e.ToString();
             }
         }
-
     }
 }
     

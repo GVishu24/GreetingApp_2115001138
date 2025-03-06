@@ -10,6 +10,7 @@ namespace BusinessLayer.Interface
     public interface IGreetingBL
     {
         string GetGreetingBL();
-        string GetGreetingBL(GreetingRequestModel greetingRequest);
+        string GetGreetingBL(GreetUserModel greetingRequest);
+        public string SaveGreetingBL(SaveGreetingModel greeting);
     }
 }
