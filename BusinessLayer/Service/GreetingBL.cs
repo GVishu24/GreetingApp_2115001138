@@ -88,6 +88,20 @@ namespace BusinessLayer.Service
                 throw new Exception(e.Message);
             }
         }
+        public bool UpdateGreetingMessageBL(int id, SaveGreetingModel modifiedGreeting)
+        {
+            try
+            {
+                _logger.LogInformation("Trying to update greeting message by id");
+                return _greetingRL.UpdateGreetingMessageRL(id, modifiedGreeting);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return false;
+            }
+        }
     }
 }
     

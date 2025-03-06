@@ -129,5 +129,27 @@ namespace RepositoryLayer.Service
                 throw new Exception(e.Message);
             }
         }
+        public bool UpdateGreetingMessageRL(int id, SaveGreetingModel modifiedGreeting)
+        {
+            try
+            {
+                _logger.LogInformation($"Trying to update greeting message in the Database for ID: {id}");
+                var greeting = _dbContext.GreetingEntities.FirstOrDefault(g => g.GreetingId == id);
+                if (greeting == null)
+                {
+                    _logger.LogWarning($"No greeting found with ID: {id}");
+                    return false;
+                }
+                greeting.GreetingMessage = modifiedGreeting.GreetingMessage;
+                _dbContext.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception occurred while updating greeting message in the Database: {e.Message}");
+                return false;
+            }
+        }
     }
 }
