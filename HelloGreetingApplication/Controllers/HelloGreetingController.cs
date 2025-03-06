@@ -2,6 +2,7 @@ using BusinessLayer.Interface;
 using BusinessLayer.Service;
 using Microsoft.AspNetCore.Mvc;
 using ModelLayer.Model;
+using RepositoryLayer.Entity;
 
 namespace HelloGreetingApplication.Controllers
 {
@@ -237,6 +238,30 @@ namespace HelloGreetingApplication.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Exception Occured in GetGreeting {e.Message}");
+                ResponseModel<string> response = new ResponseModel<string>();
+                response.Message = "Get method failed";
+                response.Success = false;
+                response.Data = e.Message;
+                return BadRequest(response);
+            }
+        }
+        [HttpGet]
+        [Route("RetrieveAllGreetings")]
+        public IActionResult GetGreetings()
+        {
+            try
+            {
+                _logger.LogInformation("Get Greetings method called");
+                ResponseModel<List<GreetingEntity>> response = new ResponseModel<List<GreetingEntity>>();
+                var greetings = _igreetingBL.GetAllGreetingsBL();
+                response.Message = "Get method successfully applied";
+                response.Success = true;
+                response.Data = greetings;
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception Occured in GetGreetings {e.Message}");
                 ResponseModel<string> response = new ResponseModel<string>();
                 response.Message = "Get method failed";
                 response.Success = false;

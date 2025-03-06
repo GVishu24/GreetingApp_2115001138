@@ -106,5 +106,28 @@ namespace RepositoryLayer.Service
                 return "There's some error occured while trying to fetch greeting message by ID";
             }
         }
+        public List<GreetingEntity> RetrieveAllGreetingsRL()
+        {
+            try
+            {
+                _logger.LogInformation("Trying to retrieve all greeting messages from the Database");
+                var greetings = _dbContext.GreetingEntities.ToList();
+                if (greetings.Count > 0)
+                {
+                    _logger.LogInformation("Greeting messages fetched successfully");
+                    return greetings;
+                }
+                else
+                {
+                    _logger.LogError("There's no greeting messages in the Database");
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception Occured while fetching all greeting messages from the Database {e.Message}");
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

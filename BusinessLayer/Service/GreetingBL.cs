@@ -74,6 +74,20 @@ namespace BusinessLayer.Service
                 return e.ToString();
             }
         }
+        public List<GreetingEntity> GetAllGreetingsBL()
+        {
+            try
+            {
+                _logger.LogInformation("Trying to get all the greeting messages");
+                return _greetingRL.RetrieveAllGreetingsRL();
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Exception Occured while getting all greeting messages {e.Message}");
+                throw new Exception(e.Message);
+            }
+        }
     }
 }
     
