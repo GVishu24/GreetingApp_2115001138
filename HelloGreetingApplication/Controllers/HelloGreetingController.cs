@@ -4,345 +4,184 @@ using Microsoft.AspNetCore.Mvc;
 using ModelLayer.Model;
 using RepositoryLayer.Entity;
 
-namespace HelloGreetingApplication.Controllers
-{
+namespace HelloGreetingApplication.Controllers {
+
     [ApiController]
     [Route("[controller]")]
     public class HelloGreetingController : ControllerBase
     {
-        private readonly IGreetingBL _igreetingBL;
+        private readonly IGreetingBL _greetingBl;
         private readonly ILogger<HelloGreetingController> _logger;
-        public HelloGreetingController(IGreetingBL greetingBL, ILogger<HelloGreetingController> logger)
+
+        public HelloGreetingController(IGreetingBL greetingBl, ILogger<HelloGreetingController> logger)
         {
-            _igreetingBL = greetingBL;
+            _greetingBl = greetingBl;
             _logger = logger;
         }
+
         [HttpGet]
         public IActionResult Get()
         {
-            try
+            _logger.LogInformation("Get Greeting method called");
+            ResponseModel<string> response = new ResponseModel<string>
             {
-                _logger.LogInformation("Starting process of getting Greetings");
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                string greetingMsg = _igreetingBL.GetGreetingBL();
-                responseModel.Success = true;
-                responseModel.Message = "Greetings";
-                responseModel.Data = greetingMsg;
-                _logger.LogInformation("Greeting successfull");
-                return Ok(responseModel);
-
-            }
-            catch (Exception ex)
-            {
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = false;
-                responseModel.Message = "oops error occured";
-                responseModel.Data = ex.Message;
-                _logger.LogInformation("Error occured while getting greeting");
-                return BadRequest(responseModel);
-            }
-
+                Message = "Get method successfully applied",
+                Success = true,
+                Data = _greetingBl.GetGreetingBL()
+            };
+            return Ok(response);
         }
+
         [HttpPost]
-        public IActionResult Post([FromBody] UserRegistrationModel userRegistrationModel)
+        public IActionResult Post(UserRegistrationModel userRegistration)
         {
-            try
+            _logger.LogInformation("Post method called");
+            ResponseModel<string> response = new ResponseModel<string>
             {
-                _logger.LogInformation("starting process of registering user");
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = true;
-                responseModel.Message = "user added successfully";
-                responseModel.Data = $"First Name : {userRegistrationModel.FirstName} Last Name : {userRegistrationModel.LastName} Email : {userRegistrationModel.Email}";
-                _logger.LogInformation("user added successfully");
-                return Ok(responseModel);
-
-            }
-            catch (Exception ex)
-            {
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = false;
-                responseModel.Message = "User registration failed";
-                responseModel.Data = ex.Message;
-                _logger.LogInformation($"error occured while registering user, Error: {ex.Message}");
-                return BadRequest(responseModel);
-            }
-
-
+                Message = "Post method successfully applied",
+                Success = true,
+                Data = $"user first name: {userRegistration.FirstName}, last name:{userRegistration.LastName}, email: {userRegistration.Email}"
+            };
+            return Ok(response);
         }
+
         [HttpPut]
-        public IActionResult Put([FromBody] UserRegistrationModel userRegistrationModel)
+        public IActionResult Put(UserRegistrationModel userUpdate)
         {
-            try
+            _logger.LogInformation("Put method called");
+            ResponseModel<string> response = new ResponseModel<string>
             {
-                _logger.LogInformation($"Starting updating process for User with Email : {userRegistrationModel.Email}");
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = true;
-                responseModel.Message = "User updated Successfully";
-                responseModel.Data = $"Updated User - First Name : {userRegistrationModel.FirstName} Last Name : {userRegistrationModel.LastName} Email : {userRegistrationModel.Email}";
-                _logger.LogInformation($"User Updated succesfully new user with email : {userRegistrationModel.Email}");
-                return Ok(responseModel);
-            }
-            catch (Exception ex)
-            {
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = false;
-                responseModel.Message = "Error occured while updating user";
-                responseModel.Data = ex.Message;
-                _logger.LogError($"Error occured while updating user with Email : {userRegistrationModel.Email}");
-                return BadRequest(responseModel);
-
-            }
-
+                Message = "Put method successfully applied",
+                Success = true,
+                Data = $"Updated user: {userUpdate.FirstName}, {userUpdate.LastName}, {userUpdate.Email}"
+            };
+            return Ok(response);
         }
+
         [HttpPatch]
-        public IActionResult Patch(UpdateRequestModel updateRequestModel)
+        public IActionResult Patch(UpdateRequestModel userPatch)
         {
-            try
+            _logger.LogInformation("Patch method called");
+            ResponseModel<string> response = new ResponseModel<string>
             {
-                _logger.LogInformation("Starting process of updating value for user");
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = true;
-                responseModel.Message = "LastName updated successfully";
-                responseModel.Data = $"Updated User - Last Name : {updateRequestModel.LastName}";
-                _logger.LogInformation("Updation Successfull");
-                return Ok(responseModel);
-
-            }
-            catch (Exception ex)
-            {
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = false;
-                responseModel.Message = "Error occured while updating lastname";
-                responseModel.Data = ex.Message;
-                _logger.LogError($"Error occured while updating value Error : {ex.Message}");
-                return BadRequest(responseModel);
-            }
-
+                Message = "Patch method successfully applied",
+                Success = true,
+                Data = $"Patched user data: {userPatch.FirstName}, {userPatch.LastName}, {userPatch.Email}"
+            };
+            return Ok(response);
         }
+
         [HttpDelete]
         public IActionResult Delete(UserRegistrationModel userDeletion)
         {
-            try
+            _logger.LogInformation("Delete method called");
+            ResponseModel<string> response = new ResponseModel<string>
             {
-                _logger.LogInformation("Starting process of deleting user");
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = true;
-                responseModel.Message = "User Deleted successfully";
-                responseModel.Data = $"User deleted successfully with email : {userDeletion.Email}";
-                userDeletion.FirstName = string.Empty;
-                userDeletion.LastName = string.Empty;
-                userDeletion.Email = string.Empty;
-
-                userDeletion.Password = string.Empty;
-                _logger.LogInformation("user deletion successfull");
-
-                return Ok(responseModel);
-
-            }
-            catch (Exception ex)
-            {
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = false;
-                responseModel.Message = "Error occured while deleting user";
-                responseModel.Data = ex.Message;
-                _logger.LogInformation($"Error occured while deletion Error = {ex.Message}");
-                return BadRequest(responseModel);
-            }
-
+                Message = "Delete method successfully applied",
+                Success = true,
+                Data = $"User with email {userDeletion.Email} is deleted"
+            };
+            return Ok(response);
         }
-        [HttpPost]
-        [Route("GetGreeting")]
-        public IActionResult Post([FromBody] GreetUserModel greetingRequest)
+
+        [HttpPost("GreetUser")]
+        public IActionResult Post(GreetUserModel greetUserModel)
         {
-            try
+            _logger.LogInformation("Trying to greet a user");
+            ResponseModel<string> response = new ResponseModel<string>
             {
-                _logger.LogInformation("starting process of getting greeting request");
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                string greetingMsg = _igreetingBL.GetGreetingBL(greetingRequest);
-                responseModel.Success = true;
-                responseModel.Message = "Greetings";
-                responseModel.Data = greetingMsg;
-                _logger.LogInformation("Greeting successfull");
-                return Ok(responseModel);
-
-            }
-            catch (Exception ex)
-            {
-                ResponseModel<string> responseModel = new ResponseModel<string>();
-                responseModel.Success = false;
-                responseModel.Message = "Greeting failed";
-                responseModel.Data = ex.Message;
-                _logger.LogInformation($"error occured while getting greeting {ex.Message}");
-                return BadRequest(responseModel);
-            }
-
+                Message = "User greeted successfully",
+                Success = true,
+                Data = _greetingBl.GetGreetingBL(greetUserModel)
+            };
+            return Ok(response);
         }
-        //[HttpPost]
-        //[Route("SaveGreeting")]
-        //public IActionResult SaveGreeting(GreetUserModel saveGreetingRequest)
-        //{
-        //    try
-        //    {
-        //        _logger.LogInformation("Starting process of saving greeting according to user");
-        //        ResponseModel<string> responseDB = _igreetingBL.SavegreetingBL(saveGreetingRequest);
-        //        _logger.LogInformation("Greeting Saved successfully");
-        //        return Ok(responseDB);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Error occured while saving greeting : {ex.Message}");
-        //        ResponseModel<string> responseDB = _igreetingBL.SavegreetingBL(saveGreetingRequest);
 
-        //        return BadRequest(responseDB);
-        //    }
-        //}
-        [HttpPost]
-        [Route("SaveGreetings")]
+        [HttpPost("SaveGreetings")]
         public IActionResult Post(SaveGreetingModel greeting)
         {
-            _logger.LogInformation("Post method called to save the greeting message");
-            try
+            _logger.LogInformation("Saving the greeting message");
+            ResponseModel<string> response = new ResponseModel<string>
             {
-                _logger.LogInformation("Trying to save the greeting message");
-                ResponseModel<string> response = new ResponseModel<string>();
-                string result = _igreetingBL.SaveGreetingBL(greeting);
-                response.Message = "Greeting message saved successfully";
-                response.Success = true;
-                response.Data = $"The greeting message saved in the Database is: {result}";
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Exception Occured in Save Greeting Method {e.Message}");
-                ResponseModel<string> response = new ResponseModel<string>();
-                response.Message = "There is some error while trying to save the greeting message";
-                response.Success = false;
-                response.Data = e.Message;
-                return BadRequest(response);
-            }
+                Message = "Greeting message saved successfully",
+                Success = true,
+                Data = $"Saved greeting: {_greetingBl.SaveGreetingBL(greeting)}"
+            };
+            return Ok(response);
         }
-        [HttpPost]
-        [Route("GetGreetingById")]
+
+        [HttpPost("GetGreetingById")]
         public IActionResult Post(GreetByIdModel iD)
         {
-            try
+            _logger.LogInformation("Getting greeting by ID");
+            ResponseModel<string> response = new ResponseModel<string>
             {
-                _logger.LogInformation("Get Greeting By Id method called");
-                ResponseModel<string> response = new ResponseModel<string>();
-                string greeting = _igreetingBL.GetGreetingByIdBL(iD);
-                response.Message = "Get method successfully applied";
-                response.Success = true;
-                response.Data = greeting;
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Exception Occured in GetGreeting {e.Message}");
-                ResponseModel<string> response = new ResponseModel<string>();
-                response.Message = "Get method failed";
-                response.Success = false;
-                response.Data = e.Message;
-                return BadRequest(response);
-            }
+                Message = "Get method successfully applied",
+                Success = true,
+                Data = _greetingBl.GetGreetingByIdBL(iD)
+            };
+            return Ok(response);
         }
-        [HttpGet]
-        [Route("RetrieveAllGreetings")]
+
+        [HttpGet("RetrieveAllGreetings")]
         public IActionResult GetGreetings()
         {
-            try
+            _logger.LogInformation("Getting all greetings");
+            ResponseModel<List<GreetingEntity>> response = new ResponseModel<List<GreetingEntity>>
             {
-                _logger.LogInformation("Get Greetings method called");
-                ResponseModel<List<GreetingEntity>> response = new ResponseModel<List<GreetingEntity>>();
-                var greetings = _igreetingBL.GetAllGreetingsBL();
-                response.Message = "Get method successfully applied";
-                response.Success = true;
-                response.Data = greetings;
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Exception Occured in GetGreetings {e.Message}");
-                ResponseModel<string> response = new ResponseModel<string>();
-                response.Message = "Get method failed";
-                response.Success = false;
-                response.Data = e.Message;
-                return BadRequest(response);
-            }
+                Message = "Get method successfully applied",
+                Success = true,
+                Data = _greetingBl.GetAllGreetingsBL()
+            };
+            return Ok(response);
         }
+
         [HttpPut("{id}")]
         public IActionResult PutGreetings(int id, [FromBody] SaveGreetingModel modifiedGreeting)
         {
-            try
-            {
-                _logger.LogInformation($"Update Greetings method called for ID: {id}");
-                bool result = _igreetingBL.UpdateGreetingMessageBL(id, modifiedGreeting);
-                if (result)
-                {
-                    ResponseModel<string> response = new ResponseModel<string>();
-                    response.Success = true;
-                    response.Message = "Greeting is successfully updated";
-                    response.Data = $"{modifiedGreeting.GreetingMessage}";
+            _logger.LogInformation($"Updating greeting with ID: {id}");
+            bool result = _greetingBl.UpdateGreetingMessageBL(id, modifiedGreeting);
 
-                    return Ok(response);
-                }
-                else
-                {
-                    ResponseModel<string> response = new ResponseModel<string>();
-                    response.Success = false;
-                    response.Message = "No greeting message is present with that id";
-                    response.Data = $"please create a new greeting message before modifying";
-                    return NotFound(response);
-                }
-            }
-            catch (Exception e)
+            if (!result)
             {
-                _logger.LogError($"Exception occurred in Update Greetings: {e.Message}");
-                ResponseModel<string> response = new ResponseModel<string>();
-                response.Success = false;
-                response.Message = $"an error occured while trying to modify the greeting {e.Message}";
-                response.Data = $"Not able to update greeting currently";
-                return BadRequest(response);
+                return NotFound(new ResponseModel<string>
+                {
+                    Success = false,
+                    Message = "No greeting message found with that ID",
+                    Data = "Create a new greeting message before modifying"
+                });
             }
+
+            return Ok(new ResponseModel<string>
+            {
+                Success = true,
+                Message = "Greeting updated successfully",
+                Data = modifiedGreeting.GreetingMessage
+            });
         }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteGreeting(int id)
         {
-            try
+            _logger.LogInformation($"Deleting greeting with ID: {id}");
+            bool result = _greetingBl.DeleteGreetingMessageBL(id);
+
+            if (!result)
             {
-                _logger.LogInformation($"Delete Greetings method called for ID: {id}");
-                bool result = _igreetingBL.DeleteGreetingMessageBL(id);
-                if (result)
+                return NotFound(new ResponseModel<string>
                 {
-                    ResponseModel<string> response = new ResponseModel<string>();
-                    response.Success = true;
-                    response.Message = "Greeting is successfully deleted";
-                    response.Data = $"The greeting message with id {id} is deleted";
-                    return Ok(response);
-                }
-                else
-                {
-                    ResponseModel<string> response = new ResponseModel<string>();
-                    response.Success = false;
-                    response.Message = "No greeting message is present with that id";
-                    response.Data = $"please create a new greeting message before deleting";
-                    return NotFound(response);
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Exception occurred in Delete Greetings: {e.Message}");
-                ResponseModel<string> response = new ResponseModel<string>();
-                response.Success = false;
-                response.Message = $"an error occured while trying to delete the greeting {e.Message}";
-                response.Data = $"Not able to delete greeting currently";
-                return BadRequest(response);
+                    Success = false,
+                    Message = "No greeting message found with that ID",
+                    Data = "Create a new greeting message before deleting"
+                });
             }
 
+            return Ok(new ResponseModel<string>
+            {
+                Success = true,
+                Message = "Greeting deleted successfully",
+                Data = $"Deleted greeting with ID {id}"
+            });
         }
     }
 }
-
-        
-
-
-        
