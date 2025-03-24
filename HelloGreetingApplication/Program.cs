@@ -2,9 +2,12 @@ using BusinessLayer.Interface;
 using BusinessLayer.Service;
 using Microsoft.EntityFrameworkCore;
 using Middleware.HashingAlgo;
+using Middleware.TokenGeneration;
 using RepositoryLayer.Context;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Service;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +28,28 @@ builder.Services.AddScoped<IGreetingRL, GreetingRL>();
 builder.Services.AddScoped<IUserBL, UserBL>();
 builder.Services.AddScoped<IUserRL, UserRL>();
 
+//Adding Hashing
 builder.Services.AddScoped<IHashingService, HashingService>();
+
+//Addidng JWt
+builder.Services.AddSingleton<IJwtService, JwtService>();
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateLifetime = true
+        };
+    });
 
 
 var connectionString = builder.Configuration.GetConnectionString("SqlConnection");

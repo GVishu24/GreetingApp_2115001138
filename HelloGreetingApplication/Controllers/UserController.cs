@@ -56,6 +56,7 @@ namespace HelloGreetingApplication.Controllers
         {
             _logger.LogInformation("Post method called to login the user in database");
             var response = _userBL.LoginUserBL(loginDTO);
+            response.Success = true;
             ResponseModel<AccountLoginResponse> loginResponse = new ResponseModel<AccountLoginResponse>
             {
                 Data = new AccountLoginResponse
@@ -64,7 +65,8 @@ namespace HelloGreetingApplication.Controllers
                     Success = response.Success,
                     FirstName = response.FirstName,
                     LastName = response.LastName,
-                    Email = response.Email
+                    Email = response.Email,
+                    Token = response.Token
                 }
             };
             return Ok(loginResponse);

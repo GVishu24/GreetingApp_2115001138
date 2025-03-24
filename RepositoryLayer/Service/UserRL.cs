@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Middleware.HashingAlgo;
+using Middleware.TokenGeneration;
 using ModelLayer.DTO;
 using ModelLayer.Model;
 using RepositoryLayer.Context;
@@ -19,12 +20,14 @@ namespace RepositoryLayer.Service
         private readonly GreetingAppContext _userDbContext;
         private readonly ILogger<UserRL> _logger;
         private readonly IHashingService _hashingService;
+        private readonly IJwtService _jwtService;
 
-        public UserRL(GreetingAppContext userDbContext, ILogger<UserRL> logger, IHashingService hashingService)
+        public UserRL(GreetingAppContext userDbContext, ILogger<UserRL> logger, IHashingService hashingService, IJwtService jwtService)
         {
             _userDbContext = userDbContext;
             _logger = logger;
             _hashingService = hashingService;
+            _jwtService = jwtService;
         }
 
         public AccountLoginResponse LoginUserRL(LoginDTO loginDTO)
@@ -61,13 +64,15 @@ namespace RepositoryLayer.Service
             }
 
             _logger.LogInformation($"User {loginDTO.Email} logged in successfully.");
+            var token = _jwtService.GenerateToken(user.Email, user.FirstName, user.LastName);
             return new AccountLoginResponse
             {
                 Message = "User Logged in Successfully",
                 Success = true,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Email = user.Email
+                Email = user.Email,
+                Token = token
             };
         }
 
