@@ -8,6 +8,7 @@ using RepositoryLayer.Interface;
 using RepositoryLayer.Service;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Middleware.SMTP;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,9 @@ builder.Services.AddScoped<IHashingService, HashingService>();
 
 //Addidng JWt
 builder.Services.AddSingleton<IJwtService, JwtService>();
+
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>

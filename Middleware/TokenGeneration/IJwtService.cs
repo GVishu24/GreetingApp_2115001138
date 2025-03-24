@@ -9,6 +9,10 @@ namespace Middleware.TokenGeneration
     public interface IJwtService
     {
         string GenerateToken(string email, string firstName, string lastName);
+        bool ValidateToken(string token, out string email);
+        string GenerateResetPasswordToken(string email);
+
+
 
     }
 }
